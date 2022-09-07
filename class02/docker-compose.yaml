@@ -1,0 +1,29 @@
+version: "3.3"
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=kyuinn
+        - MONGO_INITDB_ROOT_PASSWORD=1234
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./database/db:/data/db
+      - ./database/dev.archive:/Databases/dev.archive
+      - ./database/production:/Databases/production
+  mongo-express:
+    image: mongo-express
+    container_name: mexpress
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=kyuinn
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=1234
+      - ME_CONFIG_MONGODB_URL=mongodb://kyuinn:1234@mongo:27017/?authSource=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=kyuinn
+      - ME_CONFIG_BASICAUTH_PASSWORD=1234
+    links:
+      - mongo
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
